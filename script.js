@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         snippets = await res.json();
       }
     } catch {
-      // 失敗しても無視
+      // 読み込み失敗でも無視
       snippets = {};
     }
   })();
@@ -53,26 +53,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const before = editor.value.slice(0, start - currentLine.length);
         const after = editor.value.slice(end);
 
-        const snippetText = snippets[currentLine];
+        const snippetText = snippets[currentLine].body || snippets[currentLine];
         const cursorPos = snippetText.indexOf("/*カーソル*/");
 
         editor.value = before + snippetText.replace("/*カーソル*/", "") + after;
-        editor.setSelectionRange(before.length + cursorPos, before.length + cursorPos);
+        editor.setSelectionRange(before.length + (cursorPos >= 0 ? cursorPos : 0),
+                                 before.length + (cursorPos >= 0 ? cursorPos : 0));
         return;
       }
 
-      // 通常の改行のみ
+      // 通常の改行
       e.preventDefault();
       editor.value = editor.value.slice(0, start) + "\n" + editor.value.slice(end);
       editor.setSelectionRange(start + 1, start + 1);
     }
   });
 
-  // ----- 候補表示 -----
-  editor.addEventListener("keyup", () => {
+  // ----- 候補表示（スマホ対応）-----
+  editor.addEventListener("input", () => {
     const word = getCurrentWord();
     const matches = Object.keys(snippets).filter(k => k.startsWith(word));
-    if (matches.length === 0 || word === "") {
+
+    if (!word || matches.length === 0) {
       suggestionsDiv.style.display = "none";
       return;
     }
@@ -84,6 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
       div.addEventListener("click", () => insertSnippet(k));
       suggestionsDiv.appendChild(div);
     });
+
+    // editor 上に表示
+    const rect = editor.getBoundingClientRect();
+    suggestionsDiv.style.top = `${rect.top - matches.length * 40}px`; // 上に表示
+    suggestionsDiv.style.left = `${rect.left}px`;
     suggestionsDiv.style.display = "block";
   });
 
@@ -101,11 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const before = editor.value.slice(0, start - word.length);
     const after = editor.value.slice(end);
 
-    const snippetText = snippets[key];
+    const snippetText = snippets[key].body || snippets[key];
     const cursorPos = snippetText.indexOf("/*カーソル*/");
 
     editor.value = before + snippetText.replace("/*カーソル*/", "") + after;
-    editor.setSelectionRange(before.length + cursorPos, before.length + cursorPos);
+    editor.setSelectionRange(before.length + (cursorPos >= 0 ? cursorPos : 0),
+                             before.length + (cursorPos >= 0 ? cursorPos : 0));
     editor.focus();
     suggestionsDiv.style.display = "none";
   }
@@ -117,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const success = document.execCommand("copy");
       if (success) showMessage("コードをコピーしました！");
-      else alert("コピーに失敗しました");
     } catch {
       alert("コピーに失敗しました");
     }
