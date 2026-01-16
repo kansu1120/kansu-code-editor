@@ -77,11 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ----- iPhone向け: toolbarをエディタ下に表示 -----
   const updateToolbarPosition = () => {
-    // エディタ下の位置に toolbar を配置
     const editorRect = editor.getBoundingClientRect();
     const scrollY = window.scrollY || window.pageYOffset;
     toolbar.style.position = "absolute";
-    toolbar.style.top = (editorRect.bottom + scrollY + 5) + "px"; // 少し余白を追加
+    toolbar.style.top = (editorRect.bottom + scrollY + 5) + "px"; 
     toolbar.style.left = editorRect.left + "px";
   };
 
