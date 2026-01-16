@@ -5,20 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const pasteBtn = document.getElementById("paste");
   const suggestionsDiv = document.getElementById("suggestions");
 
-  let snippets = {};
-
-  // ----- スニペット読み込み -----
-  (async () => {
-    try {
-      const res = await fetch("snippets.json");
-      if (res.ok) {
-        snippets = await res.json();
-      }
-    } catch {
-      // 読み込み失敗しても無視
-      snippets = {};
-    }
-  })();
+  const snippets = {
+    "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
+    "if": "if (condition) {\n    /*カーソル*/\n}",
+    "{": "{/*カーソル*/}",
+    "[": "[/*カーソル*/]",
+    "(": "(/*カーソル*/)",
+    "vi": "vector<int>/*カーソル*/",
+    "t": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    /*カーソル*/\n}"
+  };
 
   // ----- ボタン入力 -----
   buttons.forEach(btn => {
@@ -54,8 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const before = editor.value.slice(0, start - currentLine.length);
         const after = editor.value.slice(end);
 
-        const body = snippets[currentLine].body;
-        const snippetText = Array.isArray(body) ? body.join("\n") : body;
+        const snippetText = snippets[currentLine];
         const cursorPos = snippetText.indexOf("/*カーソル*/");
 
         editor.value = before + snippetText.replace("/*カーソル*/", "") + after;
@@ -63,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 通常の改行
+      // 通常の改行のみ
       e.preventDefault();
       editor.value = editor.value.slice(0, start) + "\n" + editor.value.slice(end);
       editor.setSelectionRange(start + 1, start + 1);
@@ -71,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ----- 候補表示 -----
-  function updateSuggestions() {
+  editor.addEventListener("keyup", (e) => {
     const word = getCurrentWord();
     const matches = Object.keys(snippets).filter(k => k.startsWith(word));
     if (matches.length === 0 || word === "") {
@@ -86,16 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
       div.addEventListener("click", () => insertSnippet(k));
       suggestionsDiv.appendChild(div);
     });
-
-    // editorの上に表示
-    const rect = editor.getBoundingClientRect();
-    suggestionsDiv.style.top = (rect.top - matches.length * 40) + "px"; // 40px高さの目安
-    suggestionsDiv.style.left = rect.left + "px";
     suggestionsDiv.style.display = "block";
-  }
-
-  editor.addEventListener("input", updateSuggestions);
-  editor.addEventListener("keyup", updateSuggestions);
+  });
 
   function getCurrentWord() {
     const start = editor.selectionStart;
@@ -111,8 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const before = editor.value.slice(0, start - word.length);
     const after = editor.value.slice(end);
 
-    const body = snippets[key].body;
-    const snippetText = Array.isArray(body) ? body.join("\n") : body;
+    const snippetText = snippets[key];
     const cursorPos = snippetText.indexOf("/*カーソル*/");
 
     editor.value = before + snippetText.replace("/*カーソル*/", "") + after;
@@ -166,4 +151,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(msg);
     setTimeout(() => msg.remove(), 1200);
   }
+
 });
