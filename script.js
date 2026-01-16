@@ -1,55 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
   const editor = document.getElementById("editor");
   const buttons = document.querySelectorAll("#toolbar button");
-  const toolbar = document.getElementById("toolbar");
+  const copyBtn = document.getElementById("copy");
+  const pasteBtn = document.getElementById("paste");
+  const suggestionsDiv = document.getElementById("suggestions");
 
-  // ----- ボタン入力機能 -----
+  const snippets = {
+    "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
+    "if": "if (condition) {\n    /*カーソル*/\n}",
+    "{": "{/*カーソル*/}",
+    "[": "[/*カーソル*/]",
+    "(": "(/*カーソル*/)",
+    "vi": "vector<int>/*カーソル*/",
+    "t": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    /*カーソル*/\n}"
+  };
+
+  // ----- ボタン入力 -----
   buttons.forEach(btn => {
-    if (btn.id === "copy" || btn.id === "paste") return; // コピーとペーストは除外
-
+    if (btn.id === "copy" || btn.id === "paste") return;
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      const text = btn.textContent;
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
+      const text = btn.textContent;
 
       if (btn.id === "left") {
         editor.setSelectionRange(Math.max(0, start - 1), Math.max(0, start - 1));
-        editor.focus();
-        return;
-      }
-
-      if (btn.id === "right") {
+      } else if (btn.id === "right") {
         editor.setSelectionRange(start + 1, start + 1);
-        editor.focus();
-        return;
+      } else {
+        editor.value = editor.value.slice(0, start) + text + editor.value.slice(end);
+        editor.setSelectionRange(start + text.length, start + text.length);
       }
-
-      editor.value = editor.value.slice(0, start) + text + editor.value.slice(end);
-      editor.setSelectionRange(start + text.length, start + text.length);
       editor.focus();
     });
   });
 
-  // ----- Enter + スニペット + 自動インデント -----
+  // ----- Enterでスニペット挿入 -----
   editor.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
       const lines = editor.value.slice(0, start).split("\n");
       const currentLine = lines[lines.length - 1].trim();
-
-const snippets = {
-  "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
-  "if": "if (condition) {\n    /*カーソル*/\n}",
-  "{" : "{/*カーソル*/}",
-  "[" : "[/*カーソル*/]",
-  "(" : "(/*カーソル*/)",
-  "vi" :"vector<int>/*カーソル*/ ", 
-  "t": "#include <bits/stdc++.h> \n using namespace std; \n int main(){\n    /*カーソル*/\n}"
-
-  
-};
 
       if (snippets[currentLine]) {
         e.preventDefault();
@@ -64,16 +57,56 @@ const snippets = {
         return;
       }
 
-      // 通常のインデント
+      // 通常の改行のみ
       e.preventDefault();
-      const indent = "    ";
-      editor.value = editor.value.slice(0, start) + "\n" + indent + editor.value.slice(end);
-      editor.setSelectionRange(start + 1 + indent.length, start + 1 + indent.length);
+      editor.value = editor.value.slice(0, start) + "\n" + editor.value.slice(end);
+      editor.setSelectionRange(start + 1, start + 1);
     }
   });
 
-  // ----- コピー機能 -----
-  const copyBtn = document.getElementById("copy");
+  // ----- 候補表示 -----
+  editor.addEventListener("keyup", (e) => {
+    const word = getCurrentWord();
+    const matches = Object.keys(snippets).filter(k => k.startsWith(word));
+    if (matches.length === 0 || word === "") {
+      suggestionsDiv.style.display = "none";
+      return;
+    }
+
+    suggestionsDiv.innerHTML = "";
+    matches.forEach(k => {
+      const div = document.createElement("div");
+      div.textContent = k;
+      div.addEventListener("click", () => insertSnippet(k));
+      suggestionsDiv.appendChild(div);
+    });
+    suggestionsDiv.style.display = "block";
+  });
+
+  function getCurrentWord() {
+    const start = editor.selectionStart;
+    const value = editor.value.slice(0, start);
+    const match = value.match(/(\S+)$/);
+    return match ? match[0] : "";
+  }
+
+  function insertSnippet(key) {
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const word = getCurrentWord();
+    const before = editor.value.slice(0, start - word.length);
+    const after = editor.value.slice(end);
+
+    const snippetText = snippets[key];
+    const cursorPos = snippetText.indexOf("/*カーソル*/");
+
+    editor.value = before + snippetText.replace("/*カーソル*/", "") + after;
+    editor.setSelectionRange(before.length + cursorPos, before.length + cursorPos);
+    editor.focus();
+    suggestionsDiv.style.display = "none";
+  }
+
+  // ----- コピー -----
   copyBtn.addEventListener("click", (e) => {
     e.preventDefault();
     editor.select();
@@ -86,8 +119,7 @@ const snippets = {
     }
   });
 
-  // ----- ペースト機能 -----
-  const pasteBtn = document.getElementById("paste");
+  // ----- ペースト -----
   pasteBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     try {
@@ -103,7 +135,7 @@ const snippets = {
     }
   });
 
-  // ----- メッセージ表示関数 -----
+  // ----- メッセージ表示 -----
   function showMessage(msgText) {
     const msg = document.createElement("div");
     msg.textContent = msgText;
@@ -119,4 +151,5 @@ const snippets = {
     document.body.appendChild(msg);
     setTimeout(() => msg.remove(), 1200);
   }
+
 });
