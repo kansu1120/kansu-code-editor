@@ -42,6 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
 const snippets = {
   "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
   "if": "if (condition) {\n    /*カーソル*/\n}",
+  "{" : "{/*カーソル*/}",
+  "[" : "[/*カーソル*/]",
+  "(" : "(/*カーソル*/)",
   "t": `#include <bits/stdc++.h>
 #include <atcoder/all>
 using namespace atcoder;
@@ -51,18 +54,7 @@ using ll = long long;
 #define int long long
 const ll INF = 1e18;
 const int inf = 1e9;
-const int mod = 998244353;
-const int MOD = 1000000007;
-template<class T>
-void chmin(T& a, T b){ if(a > b) a = b; }
-template<class T>
-void chmax(T& a, T b){ if(a < b) a = b; }
-void yes(){cout << "Yes" << endl;}
-void no(){cout << "No" << endl;}
-using mint = modint998244353;
 int32_t main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
     /*カーソル*/
 }`
 };
