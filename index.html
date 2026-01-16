@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Kansu Code</title>
+  <!-- iPhoneで最初から小さめ表示、拡大禁止 -->
   <meta name="viewport" content="width=device-width, initial-scale=0.7, user-scalable=no">
   <style>
     body {
@@ -14,6 +15,8 @@
       height: 100vh;
       overflow: hidden;
     }
+
+    /* エディタ */
     #editor {
       width: 100%;
       height: 190px;
@@ -22,6 +25,8 @@
       box-sizing: border-box;
       margin-bottom: 8px;
     }
+
+    /* toolbar */
     #toolbar {
       position: absolute;
       top: 200px;
@@ -33,22 +38,41 @@
       z-index: 1000;
       height: auto;
     }
-    #toolbar button { font-size: 16px; padding: 9px 13px; margin: 2px; }
+
+    #toolbar button {
+      font-size: 16px;
+      padding: 9px 13px;
+      margin: 2px;
+    }
+
+    /* READMEリンク用 */
+    #readme-link {
+      margin-top: 10px;
+    }
+
+    /* スニペット候補表示 */
     #suggestions {
       position: absolute;
-      top: 150px;
+      top: 150px; /* editor下に固定 */
       left: 1px;
       background: #fff;
       border: 1px solid #ccc;
       padding: 1px;
       z-index: 1500;
       display: none;
-      font-size: 30px;
-      font-family: monospace;
+    font-size: 30px;     /* ← 文字を大きくする */
+    font-family: monospace; /* コード風 */
     }
-    #suggestions div { padding: 10px 6px; cursor: pointer; }
-    #suggestions div:hover { background: #d0f0ff; }
-    #readme-link { margin-top: 10px; }
+
+    #suggestions div {
+      padding: 10px 6px;
+      cursor: pointer;
+    }
+
+    #suggestions div:hover {
+      background: #d0f0ff;
+    }
+
   </style>
 </head>
 <body>
@@ -77,6 +101,7 @@
 </div>
 
 <div id="suggestions"></div>
+
 <div id="readme-link">
   <a href="https://kansu1120.github.io/kansu-code-editor/">README.md</a>
 </div>
