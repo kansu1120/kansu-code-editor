@@ -5,32 +5,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ----- ボタン入力機能 -----
   buttons.forEach(btn => {
-    // コピー・ペーストは別で処理
-    if (btn.id === "copy" || btn.id === "paste") return;
+    if (btn.id === "copy" || btn.id === "paste") return; // コピーとペーストは除外
 
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
       const text = btn.textContent;
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
 
-      // カーソル移動ボタン
       if (btn.id === "left") {
         editor.setSelectionRange(Math.max(0, start - 1), Math.max(0, start - 1));
         editor.focus();
         return;
       }
+
       if (btn.id === "right") {
         editor.setSelectionRange(start + 1, start + 1);
         editor.focus();
         return;
       }
 
-      // 文字挿入
-      editor.value =
-        editor.value.slice(0, start) +
-        text +
-        editor.value.slice(end);
-
+      editor.value = editor.value.slice(0, start) + text + editor.value.slice(end);
       editor.setSelectionRange(start + text.length, start + text.length);
       editor.focus();
     });
@@ -44,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const lines = editor.value.slice(0, start).split("\n");
       const currentLine = lines[lines.length - 1].trim();
 
-      // スニペット辞書
       const snippets = {
         "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
         "if": "if (condition) {\n    /*カーソル*/\n}"
@@ -59,62 +53,50 @@ document.addEventListener("DOMContentLoaded", () => {
         const cursorPos = snippetText.indexOf("/*カーソル*/");
 
         editor.value = before + snippetText.replace("/*カーソル*/", "") + after;
-        editor.setSelectionRange(
-          before.length + cursorPos,
-          before.length + cursorPos
-        );
+        editor.setSelectionRange(before.length + cursorPos, before.length + cursorPos);
         return;
       }
 
-      // 通常のインデント（スペース4個）
+      // 通常のインデント
       e.preventDefault();
       const indent = "    ";
-      editor.value =
-        editor.value.slice(0, start) + "\n" + indent + editor.value.slice(end);
-      editor.setSelectionRange(
-        start + 1 + indent.length,
-        start + 1 + indent.length
-      );
+      editor.value = editor.value.slice(0, start) + "\n" + indent + editor.value.slice(end);
+      editor.setSelectionRange(start + 1 + indent.length, start + 1 + indent.length);
     }
   });
 
   // ----- コピー機能 -----
   const copyBtn = document.getElementById("copy");
-  copyBtn.addEventListener("click", () => {
+  copyBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     editor.select();
     try {
       const success = document.execCommand("copy");
-      if (success) {
-        showMessage("コードをコピーしました！");
-      } else {
-        alert("コピーに失敗しました");
-      }
-    } catch (err) {
+      if (success) showMessage("コードをコピーしました！");
+      else alert("コピーに失敗しました");
+    } catch {
       alert("コピーに失敗しました");
     }
   });
 
   // ----- ペースト機能 -----
   const pasteBtn = document.getElementById("paste");
-  pasteBtn.addEventListener("click", async () => {
+  pasteBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
     try {
-      // navigator.clipboardを使う（HTTPSまたはlocalhostで動作）
       const text = await navigator.clipboard.readText();
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
-      editor.value =
-        editor.value.slice(0, start) +
-        text +
-        editor.value.slice(end);
+      editor.value = editor.value.slice(0, start) + text + editor.value.slice(end);
       editor.setSelectionRange(start + text.length, start + text.length);
       editor.focus();
       showMessage("コードをペーストしました！");
-    } catch (err) {
-      alert("ペーストに失敗しました");
+    } catch {
+      alert("ペーストに失敗しました。\nHTTPS環境か確認してください。");
     }
   });
 
-  // ----- メッセージ表示補助 -----
+  // ----- メッセージ表示関数 -----
   function showMessage(msgText) {
     const msg = document.createElement("div");
     msg.textContent = msgText;
