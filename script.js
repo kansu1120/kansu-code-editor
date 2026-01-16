@@ -66,7 +66,7 @@ const snippets = {
 
       // 通常のインデント
       e.preventDefault();
-      const indent = "";
+      const indent = "    ";
       editor.value = editor.value.slice(0, start) + "\n" + indent + editor.value.slice(end);
       editor.setSelectionRange(start + 1 + indent.length, start + 1 + indent.length);
     }
