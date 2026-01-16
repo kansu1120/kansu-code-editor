@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ----- ボタン入力機能 -----
   buttons.forEach(btn => {
-    if (btn.id === "copy" || btn.id === "paste") return; // コピー・ペーストは除外
+    // コピー・ペーストは別で処理
+    if (btn.id === "copy" || btn.id === "paste") return;
 
     btn.addEventListener("click", () => {
       const text = btn.textContent;
@@ -84,19 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const success = document.execCommand("copy");
       if (success) {
-        const msg = document.createElement("div");
-        msg.textContent = "コードをコピーしました！";
-        msg.style.position = "fixed";
-        msg.style.top = "20px";
-        msg.style.left = "50%";
-        msg.style.transform = "translateX(-50%)";
-        msg.style.background = "#d0f0ff";
-        msg.style.padding = "6px 12px";
-        msg.style.border = "1px solid #ccc";
-        msg.style.borderRadius = "4px";
-        msg.style.zIndex = 2000;
-        document.body.appendChild(msg);
-        setTimeout(() => msg.remove(), 1200);
+        showMessage("コードをコピーしました！");
       } else {
         alert("コピーに失敗しました");
       }
@@ -109,19 +98,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const pasteBtn = document.getElementById("paste");
   pasteBtn.addEventListener("click", async () => {
     try {
+      // navigator.clipboardを使う（HTTPSまたはlocalhostで動作）
       const text = await navigator.clipboard.readText();
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
-
       editor.value =
         editor.value.slice(0, start) +
         text +
         editor.value.slice(end);
-
       editor.setSelectionRange(start + text.length, start + text.length);
       editor.focus();
+      showMessage("コードをペーストしました！");
     } catch (err) {
       alert("ペーストに失敗しました");
     }
   });
+
+  // ----- メッセージ表示補助 -----
+  function showMessage(msgText) {
+    const msg = document.createElement("div");
+    msg.textContent = msgText;
+    msg.style.position = "fixed";
+    msg.style.top = "20px";
+    msg.style.left = "50%";
+    msg.style.transform = "translateX(-50%)";
+    msg.style.background = "#d0f0ff";
+    msg.style.padding = "6px 12px";
+    msg.style.border = "1px solid #ccc";
+    msg.style.borderRadius = "4px";
+    msg.style.zIndex = 2000;
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 1200);
+  }
 });
