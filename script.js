@@ -45,19 +45,19 @@ const snippets = {
   "{" : "{/*カーソル*/}",
   "[" : "[/*カーソル*/]",
   "(" : "(/*カーソル*/)",
-  "t": `#include <bits/stdc++.h>
-  "vi" :"vector<int>"/*カーソル*/,
-#include <atcoder/all>
-using namespace atcoder;
-using namespace std;
-using ll = long long;
-#define rep(i , n) for(int i=0; i< (int)(n); i++)
-#define int long long
-const ll INF = 1e18;
-const int inf = 1e9;
-int32_t main(){
+  "vi" :"vector<int>"/*カーソル*/, 
+  "t": "#include <bits/stdc++.h> \n
+#include <atcoder/all> \n
+using namespace atcoder; \n
+using namespace std; \n
+using ll = long long; \n
+#define rep(i , n) for(int i=0; i< (int)(n); i++)  \n
+#define int long long  \n
+const ll INF = 1e18;  \n
+const int inf = 1e9;  \n
+int32_t main(){  \n
     /*カーソル*/
-}`
+}"
 };
 
       if (snippets[currentLine]) {
