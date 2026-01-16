@@ -45,8 +45,8 @@ const snippets = {
   "{" : "{/*カーソル*/}",
   "[" : "[/*カーソル*/]",
   "(" : "(/*カーソル*/)",
-  "vi" :"vector<int>/*カーソル*/", 
-  "t": "#include <bits/stdc++.h> \n using namespace std"
+  "vi" :"vector<int>/*カーソル*/ ", 
+  "t": "#include <bits/stdc++.h> \n using namespace std \n int main{\n    /*カーソル*/\n}"
   }"
   
 };
