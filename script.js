@@ -34,6 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // ----- スニペット定義 -----
+  const snippets = {
+    "for": "for (int i = 0; i < n; i++) {\n    |\n}",
+    "if": "if (condition) {\n    |\n}"
+  };
+
   // ----- Enter + スニペット + 自動インデント -----
   editor.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -43,22 +49,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const lines = editor.value.slice(0, start).split("\n");
       const currentLine = lines[lines.length - 1].trim();
 
-      // スニペット辞書
-      const snippets = {
-        "for": "for (int i = 0; i < n; i++) {\n    ",
-        "if": "if (condition) {\n    "
-      };
-
       // スニペット判定
       if (snippets[currentLine]) {
         e.preventDefault();
         const before = editor.value.slice(0, start - currentLine.length);
         const after = editor.value.slice(end);
 
-        editor.value = before + snippets[currentLine] + after;
+        const snippetText = snippets[currentLine];
+        const cursorPos = snippetText.indexOf("|");
+        const finalText = snippetText.replace("|", "");
+
+        editor.value = before + finalText + after;
+
+        // カーソル位置をマーカー位置に
         editor.setSelectionRange(
-          before.length + snippets[currentLine].length,
-          before.length + snippets[currentLine].length
+          before.length + cursorPos,
+          before.length + cursorPos
         );
         return;
       }
@@ -75,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ----- iPhone向け: toolbarをエディタ下に表示 -----
+  // ----- iPhone向け: toolbar をエディタ下に固定 -----
   const updateToolbarPosition = () => {
     const editorRect = editor.getBoundingClientRect();
     const scrollY = window.scrollY || window.pageYOffset;
