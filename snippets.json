@@ -1,4 +1,4 @@
-const snippets = {
+{
   "c": "cout << /*カーソル*/ << endl;",
   "all": "/*カーソル*/.begin(), /*カーソル*/.end()",
   "vi": "vector<int>/*カーソル*/",
