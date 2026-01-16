@@ -53,17 +53,19 @@
     /* スニペット候補表示 */
     #suggestions {
       position: absolute;
-      top: 400px; /* editor下に固定 */
-      left: 10px;
+      top: 150px; /* editor下に固定 */
+      left: 1px;
       background: #fff;
       border: 1px solid #ccc;
-      padding: 4px;
+      padding: 1px;
       z-index: 1500;
       display: none;
+    font-size: 30px;     /* ← 文字を大きくする */
+    font-family: monospace; /* コード風 */
     }
 
     #suggestions div {
-      padding: 2px 6px;
+      padding: 10px 6px;
       cursor: pointer;
     }
 
