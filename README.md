@@ -1,6 +1,6 @@
 # kansu C++ editor
 
-使い方
+## 使い方
 
 tを入れてenterを押したらincludeとかが出てくる
 
