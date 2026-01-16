@@ -7,13 +7,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ----- スニペット定義 -----
   const snippets = {
-    "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
-    "if": "if (condition) {\n    /*カーソル*/\n}",
-    "{": "{/*カーソル*/}",
-    "[": "[/*カーソル*/]",
-    "(": "(/*カーソル*/)",
-    "vi": "vector<int>/*カーソル*/",
-    "t": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    /*カーソル*/\n}"
+  "c": "cout << /*カーソル*/ << endl;",
+  "vi": "vector<int>/*カーソル*/",
+  "vs": "vector<string>/*カーソル*/",
+  "vc": "vector<char>/*カーソル*/",
+  "vvi": "vector<vector<int>>/*カーソル*/",
+  "vvs": "vector<vector<string>>/*カーソル*/",
+  "vvc": "vector<vector<char>>/*カーソル*/",
+  "tmp": "#include <bits/stdc++.h>\n#include <atcoder/all>\nusing namespace atcoder;\nusing namespace std;\nusing ll = long long;\n#define rep(i , n) for(int i=0; i< (int)(n); i++)\n#define int long long\nconst ll INF = 1e18;\nconst int inf = 1e9;\nconst int mod = 998244353;\nconst int MOD = 1000000007;\ntemplate<class T>\nvoid chmin(T& a, T b){ if(a > b) a = b; }\ntemplate<class T>\nvoid chmax(T& a, T b){ if(a < b) a = b; }\nvoid yes(){cout << \"Yes\" << endl;}\nvoid no(){cout << \"No\" << endl;}\nusing mint = modint998244353;\nint32_t main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    /*カーソル*/\n}",
+  "f": "first/*カーソル*/",
+  "se": "second/*カーソル*/",
+  "cy": "cout << \"Yes\" << endl;/*カーソル*/",
+  "cn": "cout << \"No\" << endl;/*カーソル*/",
+  "pi": "pair<int,int>/*カーソル*/",
+  "pl": "pair<ll,ll>/*カーソル*/",
+  "vp": "vector<pair<int,int>>/*カーソル*/",
+  "vpl": "vector<pair<ll,ll>>/*カーソル*/",
+  "ce": "cout << endl;/*カーソル*/",
+  "pb": "push_back(/*カーソル*/);",
+  "iin": "int n; cin >> n;/*カーソル*/",
+  "li": "ll /*カーソル*/; cin >> /*カーソル*/;",
+  "im": "int m; cin >> m;/*カーソル*/",
+  "vl": "vector<ll>/*カーソル*/",
+  "t": "#include <bits/stdc++.h>\nusing namespace std;\nusing ll = long long;\n#define rep(i , n) for(int i=0; i< (int)(n); i++)\nconst ll INF = 1e18;\nconst int inf = 1e9;\nint main(){\n    /*カーソル*/\n}",
+  "nm": "int n,m; cin >> n >> m;/*カーソル*/",
+  "hw": "int h,w; cin >> h >> w;/*カーソル*/",
+  "iq": "int q; cin >> q;/*カーソル*/",
+  "vb": "vector<bool>/*カーソル*/"
   };
 
   // ----- ボタン入力 -----
