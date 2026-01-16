@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const snippets = {
         "for": "for (int i = 0; i < n; i++) {\n    /*カーソル*/\n}",
-        "if": "if (condition) {\n    /*カーソル*/\n}"
+        "if": "if (condition) {\n/*カーソル*/\n}"
       };
 
       if (snippets[currentLine]) {
